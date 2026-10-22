@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}Contactos{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao estreito">
+  <h1>Contactos</h1>
+  <div class="cartoes-3">
+    <article class="cartao cartao--azul">
+      <h3>Morada</h3>
+      <p>{{ ESCOLA.morada }}<br>{{ ESCOLA.codigo_postal }}</p>
+      <a class="ligacao-seta" href="https://www.google.com/maps/search/?api=1&query={{ ESCOLA.morada|urlencode }}%20{{ ESCOLA.codigo_postal|urlencode }}" target="_blank" rel="noopener">Ver no mapa</a>
+    </article>
+    <article class="cartao cartao--verde">
+      <h3>Telefone</h3>
+      <p><a href="tel:+351{{ ESCOLA.telefone|cut:' ' }}">{{ ESCOLA.telefone }}</a></p>
+    </article>
+    <article class="cartao cartao--rosa">
+      <h3>Email</h3>
+      <p><a href="mailto:{{ ESCOLA.email }}">{{ ESCOLA.email }}</a></p>
+    </article>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titulo %}{% if nova %}Nova publicação{% else %}Editar publicação{% endif %}{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao estreito">
+  <h1>{% if nova %}Nova publicação{% else %}Editar publicação{% endif %}</h1>
+  <form method="post" enctype="multipart/form-data" class="formulario">
+    {% csrf_token %}
+    {{ form.as_div }}
+
+    {% if not nova and publicacao.fotos.exists %}
+      <fieldset class="fotos-existentes">
+        <legend>Fotografias atuais (marque para remover)</legend>
+        <div class="galeria galeria--mini">
+          {% for foto in publicacao.fotos.all %}
+            <label class="foto-remover">
+              <img src="{% url 'foto_publicacao' foto.pk %}" alt="">
+              <span><input type="checkbox" name="remover_fotos" value="{{ foto.pk }}"> Remover</span>
+            </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+    {% endif %}
+
+    <p class="nota">Antes de publicar fotografias, confirme que as famílias autorizaram a partilha de imagens.</p>
+    <div class="acoes">
+      <button type="submit" class="botao">{% if nova %}Publicar{% else %}Guardar{% endif %}</button>
+      <a class="botao botao--contorno" href="{% if nova %}{% url 'painel' %}{% else %}{% url 'publicacao_detalhe' publicacao.pk %}{% endif %}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

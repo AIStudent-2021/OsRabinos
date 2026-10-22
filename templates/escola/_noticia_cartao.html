@@ -1,0 +1,16 @@
+{% load static %}
+<article class="noticia-cartao">
+  <a href="{% url 'noticia_detalhe' noticia.pk %}" class="noticia-cartao__imagem" tabindex="-1" aria-hidden="true">
+    {% if noticia.imagem %}
+      <img src="{% url 'imagem_noticia' noticia.pk %}" alt="" loading="lazy">
+    {% else %}
+      <img src="{% static 'img/logo.jpg' %}" alt="" class="sem-imagem" loading="lazy">
+    {% endif %}
+  </a>
+  <div class="noticia-cartao__corpo">
+    <time datetime="{{ noticia.data_publicacao|date:'c' }}">{{ noticia.data_publicacao|date:"j \d\e F \d\e Y" }}</time>
+    <h3><a href="{% url 'noticia_detalhe' noticia.pk %}">{{ noticia.titulo }}</a></h3>
+    <p>{{ noticia.resumo }}</p>
+    <a href="{% url 'noticia_detalhe' noticia.pk %}" class="ligacao-seta">Ler mais</a>
+  </div>
+</article>

@@ -1,0 +1,13 @@
+{# Lista das outras páginas da mesma secção do menu (ex.: Secretaria) #}
+{% for item in MENU %}
+  {% if item.ativo and item.itens %}
+    <aside class="seccao-lateral">
+      <h2>{{ item.titulo }}</h2>
+      <ul>
+        {% for sub in item.itens %}
+          <li><a href="{{ sub.url }}"{% if sub.ativo %} class="ativo" aria-current="page"{% endif %}>{{ sub.titulo }}</a></li>
+        {% endfor %}
+      </ul>
+    </aside>
+  {% endif %}
+{% endfor %}

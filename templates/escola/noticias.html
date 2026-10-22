@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Notícias{% endblock %}
+
+{% block conteudo %}
+{% include "escola/_faixa.html" with titulo="Notícias" introducao="O que tem acontecido n'Os Rabinos: eventos, projetos e avisos às famílias." %}
+
+<section class="contentor seccao">
+  <div class="noticias-grelha">
+    {% for noticia in pagina %}
+      {% include "escola/_noticia_cartao.html" %}
+    {% empty %}
+      <div class="caixa-vazia"><p>Ainda não há notícias publicadas.</p></div>
+    {% endfor %}
+  </div>
+
+  {% if pagina.has_other_pages %}
+    <nav class="paginacao" aria-label="Páginas">
+      {% if pagina.has_previous %}<a class="botao botao--contorno botao--pequeno" href="?pagina={{ pagina.previous_page_number }}">← Mais recentes</a>{% else %}<span></span>{% endif %}
+      <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+      {% if pagina.has_next %}<a class="botao botao--contorno botao--pequeno" href="?pagina={{ pagina.next_page_number }}">Mais antigas →</a>{% else %}<span></span>{% endif %}
+    </nav>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Área reservada{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <div class="caixa-login">
+    <h1>Área reservada</h1>
+    <p class="subtitulo">Para encarregados de educação, educadores e direção.</p>
+    <form method="post" class="formulario">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<p class="erro">O nome de utilizador ou a palavra-passe estão incorretos.</p>{% endif %}
+      <div>
+        <label for="id_username">Nome de utilizador</label>
+        <input type="text" name="username" id="id_username" autocomplete="username" required autofocus value="{{ form.username.value|default:'' }}">
+      </div>
+      <div>
+        <label for="id_password">Palavra-passe</label>
+        <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+      </div>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="botao botao--largo">Entrar</button>
+    </form>
+    <p class="nota">Ainda não tem acesso? Peça as suas credenciais à direção da escola.</p>
+  </div>
+</section>
+{% endblock %}

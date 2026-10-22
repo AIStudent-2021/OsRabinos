@@ -1,0 +1,131 @@
+{% load static %}<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}{{ ESCOLA.nome }}{% endblock %} · {{ ESCOLA.nome }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+  <link rel="icon" href="{% static 'img/logo.jpg' %}">
+  <script src="{% static 'js/menu.js' %}" defer></script>
+</head>
+<body>
+  <div class="barra-topo">
+    <div class="contentor barra-topo__conteudo">
+      <span>{{ ESCOLA.valencias }} · Porto</span>
+      <span class="barra-topo__contactos">
+        <a href="tel:+351{{ ESCOLA.telefone|cut:' ' }}">{{ ESCOLA.telefone }}</a>
+        <a href="mailto:{{ ESCOLA.email }}">{{ ESCOLA.email }}</a>
+      </span>
+    </div>
+  </div>
+
+  <header class="topo">
+    <div class="contentor topo__barra">
+      <a class="marca" href="{% url 'inicio' %}">
+        <img src="{% static 'img/logo.jpg' %}" alt="" width="56" height="56">
+        <span>os rabinos</span>
+      </a>
+
+      <button type="button" class="menu-botao" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">
+        <span></span>
+      </button>
+
+      <nav class="menu" id="menu-principal" aria-label="Menu principal">
+        <ul class="menu__lista">
+          <li>
+            <a href="{% url 'inicio' %}" class="menu__link menu__inicio{% if request.path == '/' %} ativo{% endif %}" aria-label="Início">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 3.2 2.5 11h2.8v9.3h5.2v-6h3v6h5.2V11h2.8z"/></svg>
+              <span class="menu__inicio-texto">Início</span>
+            </a>
+          </li>
+          {% for item in MENU %}
+            {% if item.itens %}
+              <li class="menu__item tem-sub">
+                <button type="button" class="menu__link{% if item.ativo %} ativo{% endif %}" aria-expanded="false" aria-controls="submenu-{{ forloop.counter }}">
+                  {{ item.titulo }}
+                  <svg class="seta" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path fill="currentColor" d="M6 8.5 1.5 4h9z"/></svg>
+                </button>
+                <ul class="submenu" id="submenu-{{ forloop.counter }}">
+                  {% for sub in item.itens %}
+                    <li><a href="{{ sub.url }}"{% if sub.ativo %} class="ativo" aria-current="page"{% endif %}>{{ sub.titulo }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% else %}
+              <li><a href="{{ item.url }}" class="menu__link{% if item.ativo %} ativo{% endif %}"{% if item.ativo %} aria-current="page"{% endif %}>{{ item.titulo }}</a></li>
+            {% endif %}
+          {% endfor %}
+
+          {% if user.is_authenticated %}
+            <li class="menu__item tem-sub menu__conta">
+              <button type="button" class="botao botao--pequeno" aria-expanded="false" aria-controls="submenu-conta">
+                Área reservada
+                <svg class="seta" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path fill="currentColor" d="M6 8.5 1.5 4h9z"/></svg>
+              </button>
+              <ul class="submenu submenu--direita" id="submenu-conta">
+                <li class="submenu__cabecalho">{{ user }}<small>{{ user.get_papel_display }}</small></li>
+                <li><a href="{% url 'painel' %}">Diário</a></li>
+                <li><a href="{% url 'horarios' %}">Horários das salas</a></li>
+                {% if user.pode_gerir_ementa %}<li><a href="{% url 'ementas_gerir' %}">Gestão de ementas</a></li>{% endif %}
+                {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">Administração</a></li>{% endif %}
+                <li><a href="{% url 'password_change' %}">Alterar palavra-passe</a></li>
+                <li>
+                  <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="submenu__botao">Sair</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          {% else %}
+            <li class="menu__conta"><a href="{% url 'login' %}" class="botao botao--pequeno">Área reservada</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="contentor mensagens">
+      {% for message in messages %}
+        <p class="mensagem mensagem--{{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main>
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <footer class="rodape">
+    <div class="contentor rodape__grelha">
+      <div>
+        <p class="rodape__marca">os rabinos</p>
+        <p>{{ ESCOLA.valencias }}</p>
+      </div>
+      <div>
+        <h2 class="rodape__titulo">Morada</h2>
+        <p>{{ ESCOLA.morada }}<br>{{ ESCOLA.codigo_postal }}</p>
+      </div>
+      <div>
+        <h2 class="rodape__titulo">Contactos</h2>
+        <p>Tel.: <a href="tel:+351{{ ESCOLA.telefone|cut:' ' }}">{{ ESCOLA.telefone }}</a><br>
+           <a href="mailto:{{ ESCOLA.email }}">{{ ESCOLA.email }}</a></p>
+      </div>
+      <div>
+        <h2 class="rodape__titulo">Ligações</h2>
+        <ul class="rodape__ligacoes">
+          <li><a href="{% url 'pre_inscricao' %}">Pré-inscrições</a></li>
+          <li><a href="{% url 'ementa' %}">Ementa da semana</a></li>
+          <li><a href="/politica-de-privacidade/">Política de Privacidade</a></li>
+          <li><a href="https://www.livroreclamacoes.pt/" target="_blank" rel="noopener">Livro de Reclamações</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="contentor rodape__copy">© {% now "Y" %} {{ ESCOLA.nome }}</p>
+  </footer>
+</body>
+</html>

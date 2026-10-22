@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block titulo %}Galeria{% endblock %}
+
+{% block conteudo %}
+{% include "escola/_faixa.html" with titulo="Galeria" introducao="Momentos especiais, festas e o nosso espaço." %}
+
+<section class="contentor seccao">
+  <div class="albuns-grelha">
+    {% for album in albuns %}
+      <a class="album-cartao" href="{% url 'album_galeria' album.pk %}">
+        {% with capa=album.fotos.all|first %}
+          {% if capa %}
+            <img src="{% url 'foto_galeria' capa.pk %}" alt="" loading="lazy">
+          {% else %}
+            <img src="{% static 'img/logo.jpg' %}" alt="" class="sem-imagem">
+          {% endif %}
+        {% endwith %}
+        <span class="album-cartao__info">
+          <strong>{{ album.titulo }}</strong>
+          <small>{{ album.data|date:"F \d\e Y" }} · {{ album.fotos.all|length }} fotografia{{ album.fotos.all|length|pluralize }}</small>
+        </span>
+      </a>
+    {% empty %}
+      <div class="caixa-vazia"><p>Ainda não há álbuns na galeria.</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

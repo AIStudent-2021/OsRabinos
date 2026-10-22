@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Horário · {{ sala.nome }}{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <div class="cabecalho-pagina">
+    <div>
+      <h1>Horário · {{ sala.nome }}</h1>
+      <p class="subtitulo">{{ sala.get_valencia_display }}{% if sala.educadores.exists %} · {{ sala.educadores.all|join:", " }}{% endif %}</p>
+    </div>
+    <div class="acoes">
+      {% if outras_salas %}
+        <details class="seletor">
+          <summary class="botao botao--contorno botao--pequeno">Outra sala ▾</summary>
+          <ul>
+            {% for outra in outras_salas %}<li><a href="{% url 'horario_sala' outra.pk %}">{{ outra.nome }}</a></li>{% endfor %}
+          </ul>
+        </details>
+      {% endif %}
+      {% if pode_editar %}
+        <a class="botao botao--pequeno" href="{% url 'horario_editar' sala.pk %}">Editar horário</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="horario sala--{{ sala.cor }}">
+    {% for dia in dias %}
+      <section class="horario__dia">
+        <h2>{{ dia.nome }}</h2>
+        {% for atividade in dia.atividades %}
+          <div class="horario__bloco">
+            <span class="horario__hora">{{ atividade.hora_inicio|time:"H:i" }} – {{ atividade.hora_fim|time:"H:i" }}</span>
+            <strong>{{ atividade.nome }}</strong>
+            {% if atividade.descricao %}<span class="horario__desc">{{ atividade.descricao }}</span>{% endif %}
+          </div>
+        {% empty %}
+          <p class="vazio">Sem atividades.</p>
+        {% endfor %}
+      </section>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

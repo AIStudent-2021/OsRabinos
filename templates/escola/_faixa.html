@@ -1,0 +1,11 @@
+{# Faixa de título das páginas. Variáveis: titulo, introducao (opcional) #}
+<section class="faixa">
+  <div class="contentor">
+    <p class="migalhas">
+      <a href="{% url 'inicio' %}">Início</a>
+      {% for item in MENU %}{% if item.ativo and item.itens %}<span aria-hidden="true">›</span> {{ item.titulo }}{% endif %}{% endfor %}
+    </p>
+    <h1>{{ titulo }}</h1>
+    {% if introducao %}<p class="faixa__intro">{{ introducao }}</p>{% endif %}
+  </div>
+</section>

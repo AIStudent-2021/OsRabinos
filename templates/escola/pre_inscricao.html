@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titulo %}Pré-inscrições{% endblock %}
+
+{% block conteudo %}
+{% include "escola/_faixa.html" with titulo="Pré-inscrições" introducao="Manifeste o seu interesse numa vaga. A secretaria contacta-o para marcar uma visita e explicar os próximos passos." %}
+
+<section class="contentor seccao com-lateral">
+  <div>
+    <ol class="passos">
+      <li><strong>Preencha o formulário</strong><span>Leva apenas dois minutos.</span></li>
+      <li><strong>Contacto da secretaria</strong><span>Ligamos para combinar uma visita ao espaço.</span></li>
+      <li><strong>Confirmação da vaga</strong><span>Entrega dos documentos e matrícula.</span></li>
+    </ol>
+
+    <form method="post" class="formulario formulario--cartao" novalidate>
+      {% csrf_token %}
+      <fieldset>
+        <legend>Dados da criança</legend>
+        <div class="formulario__linha">
+          {% include "escola/_campo.html" with campo=form.nome_crianca %}
+          {% include "escola/_campo.html" with campo=form.data_nascimento %}
+          {% include "escola/_campo.html" with campo=form.valencia %}
+          {% include "escola/_campo.html" with campo=form.ano_letivo %}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Encarregado de educação</legend>
+        <div class="formulario__linha">
+          {% include "escola/_campo.html" with campo=form.nome_encarregado %}
+          {% include "escola/_campo.html" with campo=form.email %}
+          {% include "escola/_campo.html" with campo=form.telefone %}
+        </div>
+        {% include "escola/_campo.html" with campo=form.mensagem %}
+      </fieldset>
+      <div class="campo-consentimento">
+        <label>{{ form.consentimento }} {{ form.consentimento.label|capfirst }}, de acordo com a <a href="/politica-de-privacidade/" target="_blank">Política de Privacidade</a>.</label>
+        {{ form.consentimento.errors }}
+      </div>
+      <button type="submit" class="botao">Enviar pré-inscrição</button>
+    </form>
+  </div>
+  {% include "escola/_seccao_lateral.html" %}
+</section>
+{% endblock %}

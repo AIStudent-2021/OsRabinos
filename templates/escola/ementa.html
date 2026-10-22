@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block titulo %}Ementa{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <div class="cabecalho-pagina">
+    <div>
+      <h1>Ementa semanal</h1>
+      <p class="subtitulo">Semana de {{ semana|date:"j \d\e F" }} a {{ semana_fim|date:"j \d\e F \d\e Y" }}</p>
+    </div>
+    <nav class="navegacao-semana" aria-label="Mudar de semana">
+      <a class="botao botao--contorno botao--pequeno" href="?semana={{ anterior|date:'Y-m-d' }}">← Anterior</a>
+      <a class="botao botao--contorno botao--pequeno" href="{% url 'ementa' %}">Esta semana</a>
+      <a class="botao botao--contorno botao--pequeno" href="?semana={{ seguinte|date:'Y-m-d' }}">Seguinte →</a>
+    </nav>
+  </div>
+
+  {% if ementa %}
+    <div class="ementa-grelha">
+      {% for dia in ementa.dias.all %}
+        <article class="ementa-dia{% if dia.data == hoje %} ementa-dia--hoje{% endif %}">
+          <header>
+            <h2>{{ dia.get_dia_semana_display }}</h2>
+            <span>{{ dia.data|date:"d/m" }}{% if dia.data == hoje %} · hoje{% endif %}</span>
+          </header>
+          {% if dia.sopa or dia.prato or dia.sobremesa or dia.lanche %}
+            <dl class="refeicao">
+              {% if dia.sopa %}<dt>Sopa</dt><dd>{{ dia.sopa }}</dd>{% endif %}
+              {% if dia.prato %}<dt>Prato</dt><dd>{{ dia.prato }}</dd>{% endif %}
+              {% if dia.sobremesa %}<dt>Sobremesa</dt><dd>{{ dia.sobremesa }}</dd>{% endif %}
+              {% if dia.lanche %}<dt>Lanche</dt><dd>{{ dia.lanche }}</dd>{% endif %}
+            </dl>
+            {% if dia.alergenios %}<p class="alergenios">Alergénios: {{ dia.alergenios }}</p>{% endif %}
+          {% else %}
+            <p class="vazio">Sem refeições (feriado ou encerramento).</p>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+    {% if ementa.observacoes %}<p class="nota">{{ ementa.observacoes|linebreaksbr }}</p>{% endif %}
+    {% if user.pode_gerir_ementa %}
+      <p><a class="botao botao--contorno botao--pequeno" href="{% url 'ementa_editar' ementa.pk %}">Editar esta ementa</a></p>
+    {% endif %}
+  {% else %}
+    <div class="caixa-vazia">
+      <p>A ementa desta semana ainda não foi publicada.</p>
+      {% if user.pode_gerir_ementa %}
+        <a class="botao" href="{% url 'ementa_nova' %}">Criar ementa</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

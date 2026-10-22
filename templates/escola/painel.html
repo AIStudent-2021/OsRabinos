@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block titulo %}Diário{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <div class="cabecalho-pagina">
+    <div>
+      <h1>Diário{% if sala_ativa %} · {{ sala_ativa.nome }}{% endif %}</h1>
+      <p class="subtitulo">Olá, {{ user.first_name|default:user.username }}! {% if user.is_encarregado %}Veja o que aconteceu na sala do seu filho.{% else %}Partilhe com as famílias o dia na sala.{% endif %}</p>
+    </div>
+    {% if pode_publicar %}
+      <a class="botao" href="{% url 'publicacao_nova' %}">+ Nova publicação</a>
+    {% endif %}
+  </div>
+
+  <div class="painel-grelha">
+    <aside class="painel-lateral">
+      <h2>Salas</h2>
+      <ul class="lista-salas">
+        <li><a href="{% url 'painel' %}" class="{% if not sala_ativa %}ativo{% endif %}">Todas</a></li>
+        {% for sala in salas %}
+          <li><a href="?sala={{ sala.pk }}" class="sala--{{ sala.cor }}{% if sala == sala_ativa %} ativo{% endif %}"><span class="bolinha"></span>{{ sala.nome }}</a></li>
+        {% empty %}
+          <li class="vazio">Ainda não está associado a nenhuma sala. Contacte a direção.</li>
+        {% endfor %}
+      </ul>
+      <p><a class="ligacao-seta" href="{% url 'horarios' %}">Horários</a></p>
+      <p><a class="ligacao-seta" href="{% url 'ementa' %}">Ementa da semana</a></p>
+    </aside>
+
+    <div class="feed">
+      {% for publicacao in pagina %}
+        {% include "escola/_publicacao_cartao.html" %}
+      {% empty %}
+        <div class="caixa-vazia"><p>Ainda não há publicações.</p></div>
+      {% endfor %}
+
+      {% if pagina.has_other_pages %}
+        <nav class="paginacao" aria-label="Páginas">
+          {% if pagina.has_previous %}<a class="botao botao--contorno botao--pequeno" href="?{% if sala_ativa %}sala={{ sala_ativa.pk }}&{% endif %}pagina={{ pagina.previous_page_number }}">← Mais recentes</a>{% endif %}
+          <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+          {% if pagina.has_next %}<a class="botao botao--contorno botao--pequeno" href="?{% if sala_ativa %}sala={{ sala_ativa.pk }}&{% endif %}pagina={{ pagina.next_page_number }}">Mais antigas →</a>{% endif %}
+        </nav>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}{{ pagina.titulo }}{% endblock %}
+
+{% block conteudo %}
+{% include "escola/_faixa.html" with titulo=pagina.titulo introducao=pagina.introducao %}
+
+<section class="contentor seccao com-lateral">
+  <article class="conteudo-pagina">
+    {% if pagina.provisoria %}
+      <p class="nota">Conteúdo provisório. A direção deve rever este texto no painel de administração.</p>
+    {% endif %}
+
+    {# O conteúdo é escrito pela direção no admin (utilizadores de confiança), por isso aceita HTML. #}
+    {{ pagina.conteudo|safe }}
+
+    {% if pagina.documento %}
+      <p class="documento">
+        <a class="botao" href="{% url 'documento_pagina' pagina.slug %}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 16 6.5 10.5l1.4-1.4 3.1 3.1V3h2v9.2l3.1-3.1 1.4 1.4zM5 19h14v2H5z"/></svg>
+          {{ pagina.documento_titulo|default:"Descarregar documento" }}
+        </a>
+      </p>
+    {% endif %}
+
+    <p class="atualizacao">Última atualização: {{ pagina.atualizada_em|date:"j \d\e F \d\e Y" }}</p>
+  </article>
+  {% include "escola/_seccao_lateral.html" %}
+</section>
+{% endblock %}

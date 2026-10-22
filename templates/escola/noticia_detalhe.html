@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}{{ noticia.titulo }}{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao estreito">
+  <p class="migalhas"><a href="{% url 'inicio' %}">Início</a> <span aria-hidden="true">›</span> <a href="{% url 'noticias' %}">Notícias</a></p>
+  <article class="conteudo-pagina">
+    <time class="data-noticia" datetime="{{ noticia.data_publicacao|date:'c' }}">{{ noticia.data_publicacao|date:"l, j \d\e F \d\e Y" }}</time>
+    <h1>{{ noticia.titulo }}</h1>
+    <p class="lead">{{ noticia.resumo }}</p>
+    {% if noticia.imagem %}
+      <img class="noticia-imagem" src="{% url 'imagem_noticia' noticia.pk %}" alt="">
+    {% endif %}
+    {# Conteúdo escrito pela direção no admin. #}
+    {{ noticia.conteudo|safe }}
+  </article>
+</section>
+
+{% if outras %}
+  <section class="contentor seccao">
+    <h2 class="titulo-seccao">Outras notícias</h2>
+    <div class="noticias-grelha">
+      {% for noticia in outras %}{% include "escola/_noticia_cartao.html" %}{% endfor %}
+    </div>
+  </section>
+{% endif %}
+{% endblock %}

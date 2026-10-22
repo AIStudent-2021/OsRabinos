@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Editar horário · {{ sala.nome }}{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <h1>Editar horário · {{ sala.nome }}</h1>
+  <p class="subtitulo">Cada linha é uma atividade. Use as linhas em branco para acrescentar e “Remover” para apagar. Para mais linhas, guarde e volte a editar.</p>
+
+  <form method="post" class="formulario">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% if formset.non_form_errors %}<div class="erro">{{ formset.non_form_errors }}</div>{% endif %}
+    <div class="tabela-rolar">
+      <table class="tabela-form">
+        <thead>
+          <tr><th>Dia</th><th>Início</th><th>Fim</th><th>Atividade</th><th>Descrição</th><th>Remover</th></tr>
+        </thead>
+        <tbody>
+          {% for form in formset %}
+            <tr>
+              {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+              <td>{{ form.dia_semana }}{{ form.dia_semana.errors }}</td>
+              <td>{{ form.hora_inicio }}{{ form.hora_inicio.errors }}</td>
+              <td>{{ form.hora_fim }}{{ form.hora_fim.errors }}</td>
+              <td>{{ form.nome }}{{ form.nome.errors }}</td>
+              <td>{{ form.descricao }}{{ form.descricao.errors }}</td>
+              <td class="centro">{% if form.instance.pk %}{{ form.DELETE }}{% endif %}</td>
+            </tr>
+            {% if form.non_field_errors %}<tr><td colspan="6" class="erro">{{ form.non_field_errors }}</td></tr>{% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="acoes">
+      <button type="submit" class="botao">Guardar horário</button>
+      <a class="botao botao--contorno" href="{% url 'horario_sala' sala.pk %}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

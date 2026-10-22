@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Gestão de ementas{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <div class="cabecalho-pagina">
+    <div>
+      <h1>Gestão</h1>
+      <p class="subtitulo">Ementas semanais. Para gerir utilizadores, salas e crianças use a <a href="{% url 'admin:index' %}">administração</a>.</p>
+    </div>
+    <a class="botao" href="{% url 'ementa_nova' %}">+ Nova ementa</a>
+  </div>
+
+  <div class="tabela-rolar">
+    <table class="tabela">
+      <thead><tr><th>Semana</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        {% for ementa in ementas %}
+          <tr>
+            <td><a href="{% url 'ementa' %}?semana={{ ementa.semana_inicio|date:'Y-m-d' }}">{{ ementa.semana_inicio|date:"d/m/Y" }} a {{ ementa.semana_fim|date:"d/m/Y" }}</a></td>
+            <td>{% if ementa.publicada %}<span class="selo selo--verde">Publicada</span>{% else %}<span class="selo selo--cinza">Rascunho</span>{% endif %}</td>
+            <td class="direita">
+              <a class="botao botao--contorno botao--pequeno" href="{% url 'ementa_editar' ementa.pk %}">Editar</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3" class="vazio">Ainda não há ementas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

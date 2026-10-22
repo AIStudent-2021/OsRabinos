@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Página não encontrada{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao caixa-vazia">
+  <h1>Página não encontrada</h1>
+  <p>A página que procura não existe ou foi removida.</p>
+  <a class="botao" href="{% url 'inicio' %}">Voltar ao início</a>
+</section>
+{% endblock %}

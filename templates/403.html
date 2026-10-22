@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Sem acesso{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao caixa-vazia">
+  <h1>Sem acesso</h1>
+  <p>Não tem permissão para ver esta página.</p>
+  <a class="botao" href="{% url 'inicio' %}">Voltar ao início</a>
+</section>
+{% endblock %}

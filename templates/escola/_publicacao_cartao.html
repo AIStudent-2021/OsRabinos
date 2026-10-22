@@ -1,0 +1,21 @@
+<article class="publicacao sala--{{ publicacao.sala.cor }}">
+  <header class="publicacao__cabecalho">
+    <span class="selo">{{ publicacao.sala.nome }}</span>
+    <time datetime="{{ publicacao.criada_em|date:'c' }}">{{ publicacao.criada_em|date:"l, j \d\e F · H:i" }}</time>
+  </header>
+  <h2 class="publicacao__titulo"><a href="{% url 'publicacao_detalhe' publicacao.pk %}">{{ publicacao.titulo }}</a></h2>
+  <p class="publicacao__texto">{{ publicacao.texto|truncatewords:60|linebreaksbr }}</p>
+  {% with fotos=publicacao.fotos.all %}
+    {% if fotos %}
+      <div class="galeria galeria--mini">
+        {% for foto in fotos|slice:":4" %}
+          <a href="{% url 'publicacao_detalhe' publicacao.pk %}">
+            <img src="{% url 'foto_publicacao' foto.pk %}" alt="{{ foto.legenda|default:'Fotografia da sala' }}" loading="lazy">
+            {% if forloop.last and fotos|length > 4 %}<span class="galeria__mais">+{{ fotos|length|add:"-4" }}</span>{% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  <footer class="publicacao__autor">Publicado por {{ publicacao.autor|default:"Os Rabinos" }}</footer>
+</article>

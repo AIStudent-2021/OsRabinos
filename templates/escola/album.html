@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}{{ album.titulo }} · Galeria{% endblock %}
+
+{% block conteudo %}
+{% include "escola/_faixa.html" with titulo=album.titulo introducao=album.descricao %}
+
+<section class="contentor seccao">
+  <p><a class="ligacao-voltar" href="{% url 'galeria' %}">← Todos os álbuns</a></p>
+  <div class="galeria">
+    {% for foto in album.fotos.all %}
+      <figure>
+        <a href="{% url 'foto_galeria' foto.pk %}" target="_blank" rel="noopener">
+          <img src="{% url 'foto_galeria' foto.pk %}" alt="{{ foto.legenda }}" loading="lazy">
+        </a>
+        {% if foto.legenda %}<figcaption>{{ foto.legenda }}</figcaption>{% endif %}
+      </figure>
+    {% empty %}
+      <p class="vazio">Este álbum ainda não tem fotografias.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

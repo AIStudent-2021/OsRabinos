@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}{{ publicacao.titulo }}{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao estreito">
+  <p><a class="ligacao-voltar" href="{% url 'painel' %}?sala={{ publicacao.sala.pk }}">← Voltar ao diário</a></p>
+  <article class="publicacao publicacao--completa sala--{{ publicacao.sala.cor }}">
+    <header class="publicacao__cabecalho">
+      <span class="selo">{{ publicacao.sala.nome }}</span>
+      <time datetime="{{ publicacao.criada_em|date:'c' }}">{{ publicacao.criada_em|date:"l, j \d\e F \d\e Y · H:i" }}</time>
+    </header>
+    <h1 class="publicacao__titulo">{{ publicacao.titulo }}</h1>
+    <div class="publicacao__texto">{{ publicacao.texto|linebreaks }}</div>
+    {% with fotos=publicacao.fotos.all %}
+      {% if fotos %}
+        <div class="galeria">
+          {% for foto in fotos %}
+            <figure>
+              <a href="{% url 'foto_publicacao' foto.pk %}" target="_blank" rel="noopener">
+                <img src="{% url 'foto_publicacao' foto.pk %}" alt="{{ foto.legenda|default:'Fotografia da sala' }}" loading="lazy">
+              </a>
+              {% if foto.legenda %}<figcaption>{{ foto.legenda }}</figcaption>{% endif %}
+            </figure>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    <footer class="publicacao__autor">Publicado por {{ publicacao.autor|default:"Os Rabinos" }}</footer>
+  </article>
+
+  {% if pode_editar %}
+    <div class="acoes">
+      <a class="botao botao--contorno" href="{% url 'publicacao_editar' publicacao.pk %}">Editar</a>
+      <details class="confirmar">
+        <summary class="botao botao--perigo">Apagar</summary>
+        <form method="post" action="{% url 'publicacao_apagar' publicacao.pk %}">
+          {% csrf_token %}
+          <p>Tem a certeza? A publicação e as fotografias serão apagadas.</p>
+          <button type="submit" class="botao botao--perigo">Sim, apagar</button>
+        </form>
+      </details>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

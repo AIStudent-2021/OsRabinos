@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Horários{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <h1>Horários</h1>
+  <p class="subtitulo">Escolha a sala para ver o horário semanal.</p>
+  <div class="cartoes-3">
+    {% for sala in salas %}
+      <a class="cartao cartao--ligacao sala--{{ sala.cor }}" href="{% url 'horario_sala' sala.pk %}">
+        <h3><span class="bolinha"></span>{{ sala.nome }}</h3>
+        <p>{{ sala.get_valencia_display }}</p>
+      </a>
+    {% empty %}
+      <div class="caixa-vazia"><p>Ainda não está associado a nenhuma sala. Contacte a direção.</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titulo %}{% if nova %}Nova ementa{% else %}Editar ementa{% endif %}{% endblock %}
+
+{% block conteudo %}
+<section class="contentor seccao">
+  <h1>{% if nova %}Nova ementa{% else %}Ementa da semana de {{ ementa.semana_inicio|date:"d/m/Y" }}{% endif %}</h1>
+
+  <form method="post" class="formulario">
+    {% csrf_token %}
+    <div class="formulario__linha">{{ form.as_div }}</div>
+
+    {% if formset %}
+      {{ formset.management_form }}
+      <div class="ementa-grelha ementa-grelha--form">
+        {% for f in formset %}
+          <fieldset class="ementa-dia">
+            <legend>{{ f.instance.get_dia_semana_display }} · {{ f.instance.data|date:"d/m" }}</legend>
+            {{ f.as_div }}
+          </fieldset>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="acoes">
+      <button type="submit" class="botao">{% if nova %}Criar e preencher os dias{% else %}Guardar ementa{% endif %}</button>
+      <a class="botao botao--contorno" href="{% url 'ementas_gerir' %}">Cancelar</a>
+    </div>
+  </form>
+
+  {% if not nova %}
+    <details class="confirmar">
+      <summary class="botao botao--perigo botao--pequeno">Apagar ementa</summary>
+      <form method="post" action="{% url 'ementa_apagar' ementa.pk %}">
+        {% csrf_token %}
+        <p>Tem a certeza que quer apagar esta ementa?</p>
+        <button type="submit" class="botao botao--perigo">Sim, apagar</button>
+      </form>
+    </details>
+  {% endif %}
+</section>
+{% endblock %}
